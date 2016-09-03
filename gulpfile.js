@@ -6,15 +6,18 @@ var PATH = {
         sass: 'src/sass',
         js: 'src/js',
         img: 'src/image',
-        html: 'src/html'
+        html: 'src/html',
+        scaffold: 'src/scaffold',
+        test: 'src/test'
     },
     dest: {
         css: 'resource/css',
         js: 'resource/js',
         img: 'resource/image',
-        html: 'application/views'
+        html: 'resource/html'
     }
 };
+
 
 var gulp = require('gulp');
 var sass = require('gulp-ruby-sass');
@@ -24,22 +27,52 @@ var useref = require('gulp-useref');
 var gulpIf = require('gulp-if');
 var changed = require('gulp-changed');
 var rename = require('gulp-rename');
+var replace = require('gulp-replace');
 var fileInclude = require('gulp-file-include');
 var del = require('del');
 var runSequence = require('run-sequence');
 var server = require('gulp-webserver');
-var generator = require('./generator');
 
-gulp.task('generate', function() {
+
+gulp.task('new', function() {
     var name = process.argv[4];
-    if (name) return generator.generate(name);
+
+    // html template
+    gulp.src(PATH.src.scaffold + '/blank.html')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(replace(/@@JS_SRC@@/g, PATH.src.js))
+        .pipe(replace(/@@JS_DEST@@/g, PATH.dest.js))
+        .pipe(rename(name + '.html'))
+        .pipe(gulp.dest(PATH.src.html));
+
+    // sass template
+    gulp.src(PATH.src.scaffold + '/style.scss')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(rename('style-' + name + '.scss'))
+        .pipe(gulp.dest(PATH.src.sass));
+    gulp.src(PATH.src.scaffold + '/_main.scss')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(gulp.dest(PATH.src.sass + '/layout/' + name));
+
+    // js template
+    gulp.src(PATH.src.scaffold + '/main.js')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(gulp.dest(PATH.src.js + '/' + name));
+
+    // test template
+    gulp.src(PATH.src.scaffold + '/test.js')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(replace(/@@JS_SRC@@/g, PATH.src.js))
+        .pipe(gulp.dest(PATH.src.test + '/' + name));
+    gulp.src(PATH.src.scaffold + '/test.html')
+        .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(gulp.dest(PATH.src.test + '/' + name));
 });
 
 gulp.task("build-css", function() {
     return sass(PATH.src.sass + '/*.scss',
         { stopOnError: false, style: 'expanded' })
         .on('error', sass.logError)
-        .pipe(changed(PATH.dest.css))
         .pipe(gulpIf(PRODUCTION, cssnano()))
         .pipe(gulp.dest(PATH.dest.css));
 });
@@ -58,9 +91,6 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('useref', function () {
-    gulp.src(PATH.src.js +'/common/**/*')
-        .pipe(changed(PATH.dest.js + '/common'))
-        .pipe(gulp.dest(PATH.dest.js + '/common'));
     gulp.src(PATH.src.js +'/default/**/*')
         .pipe(gulpIf(PRODUCTION, uglify()))
         .pipe(changed(PATH.dest.js + '/default'))
@@ -71,7 +101,7 @@ gulp.task('useref', function () {
             basepath: PATH.src.html + '/partials',
             indent: true
         }))
-        .pipe(useref())
+        .pipe(useref({searchPath: './'}))
         .pipe(gulpIf(PRODUCTION, gulpIf('*.js', uglify())))
         .pipe(gulp.dest(''));
 });
@@ -94,7 +124,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('clean-cache', function() {
-    return del(['*.html']);
+    return del(['*.html', '.sass-cache']);
 });
 
 gulp.task('server', function() {

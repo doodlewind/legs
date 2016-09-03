@@ -4,14 +4,19 @@
     <link rel="stylesheet" href="/resource/css/style-@@PAGE_NAME@@.css">
 </head>
 <body>
+    @@include('./header.html')
+
     <div class="main">
-        @@include('./header.html')
-        <!-- TODO: replace placeholder to page content -->
-        <div class="placeholder" style="width: 100%; height: 500px;"></div>
-        @@include('./footer.html')
+        <!-- TODO: add page content -->
     </div>
+
+    @@include('./footer.html')
 </body>
 
-<!-- build:js /resource/js/@@PAGE_NAME@@.min.js-->
-<script src="../js/@@PAGE_NAME@@/main.js"></script>
+<!-- build:js /@@JS_DEST@@/common/jquery.min.js-->
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<!-- endbuild -->
+
+<!-- build:js /@@JS_DEST@@/@@PAGE_NAME@@.min.js-->
+<script src="/@@JS_SRC@@/@@PAGE_NAME@@/main.js"></script>
 <!-- endbuild -->

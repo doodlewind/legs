@@ -1,3 +1,6 @@
+/**
+ * @@PAGE_NAME@@ - main
+ */
 var Main = function() {
     var _hello = function(name) {
         return "hello " + name;
