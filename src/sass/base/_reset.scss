@@ -1,0 +1,76 @@
+@charset "utf-8";
+/*==================================================== Reset =========================================================*/
+html {
+  color: #000;
+  background-color: #fff;
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, p, form, input, textarea, th, td {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+fieldset,img {
+  border:0;
+}
+
+ol,ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+}
+
+button {
+  outline: none;
+}
+
+a:active, a:hover, a:focus {
+  outline: none;
+}
+
+input {
+  outline: none;
+}
+
+input:required:invalid, input:focus:invalid {
+  box-shadow: none;
+}
+
+.hide{
+  display: none;
+}
+
+/* clear float */
+.clear{
+  clear: both;
+  overflow: hidden;
+  height: 0;
+}
+
+/* clear float for parent nodes */
+.fix{
+  *zoom: 1;
+  &:after {
+    display: block;
+    visibility: hidden;
+    clear: both;
+    overflow: hidden;
+    height: 0;
+    content: ' ';
+  }
+}
+
+/* HTML5 tag support for old browsers */
+header, section, footer, aside, nav, article, figure {
+  display: block;
+}
+/*================================================= END Reset ========================================================*/

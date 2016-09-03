@@ -1,0 +1,10 @@
+@charset "utf-8";
+@import "../helpers/variables";
+
+/*================================================ font fallback =====================================================*/
+h1, h2, p, span {
+  color: $default-font-color;
+  font-weight: normal;
+  font-family: "Helvetica Neue", "Hiragino Sans GB", "微软雅黑", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+/*============================================== END font fallback ===================================================*/
