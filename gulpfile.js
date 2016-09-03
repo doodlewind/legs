@@ -14,7 +14,7 @@ var PATH = {
         css: 'resource/css',
         js: 'resource/js',
         img: 'resource/image',
-        html: 'resource/html'
+        html: 'view/html'
     }
 };
 
@@ -62,10 +62,10 @@ gulp.task('new', function() {
     // test template
     gulp.src(PATH.src.scaffold + '/test.js')
         .pipe(replace(/@@PAGE_NAME@@/g, name))
-        .pipe(replace(/@@JS_SRC@@/g, PATH.src.js))
         .pipe(gulp.dest(PATH.src.test + '/' + name));
     gulp.src(PATH.src.scaffold + '/test.html')
         .pipe(replace(/@@PAGE_NAME@@/g, name))
+        .pipe(replace(/@@JS_SRC@@/g, PATH.src.js))
         .pipe(gulp.dest(PATH.src.test + '/' + name));
 });
 
@@ -85,17 +85,12 @@ gulp.task('build-image', function() {
 
 gulp.task('copy-html', function() {
     return gulp.src('*.html')
-        .pipe(changed(PATH.dest.html))
         .pipe(rename({extname: "." + HTML_EXT_NAME}))
         .pipe(gulp.dest(PATH.dest.html));
 });
 
 gulp.task('useref', function () {
-    gulp.src(PATH.src.js +'/default/**/*')
-        .pipe(gulpIf(PRODUCTION, uglify()))
-        .pipe(changed(PATH.dest.js + '/default'))
-        .pipe(gulp.dest(PATH.dest.js + '/default'));
-    gulp.src(PATH.src.html + '/*.html')
+    return gulp.src(PATH.src.html + '/*.html')
         .pipe(fileInclude({
             prefix: '@@',
             basepath: PATH.src.html + '/partials',
@@ -111,7 +106,7 @@ gulp.task('watch-html', function(callback) {
 });
 
 gulp.task('watch', function () {
-    runSequence('default', function() {
+    return runSequence('default', function() {
         gulp.watch('src/sass/**/*.scss', ['build-css']);
         gulp.watch('src/html/**/*.html', ['watch-html']);
         gulp.watch('src/js/**/*.js', ['useref']);
@@ -120,7 +115,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('clean', function() {
-    return del([PATH.dest.css, PATH.dest.js, PATH.dest.img, '*.html']);
+    return del([PATH.dest.css, PATH.dest.js, PATH.dest.img, PATH.dest.html, '*.html', '.sass-cache']);
 });
 
 gulp.task('clean-cache', function() {
@@ -128,7 +123,7 @@ gulp.task('clean-cache', function() {
 });
 
 gulp.task('server', function() {
-    runSequence('watch', function() {
+    return runSequence('watch', function() {
         gulp.src('')
             .pipe(server({
                 port: PORT,
@@ -140,5 +135,5 @@ gulp.task('server', function() {
 });
 
 gulp.task('default', function() {
-    runSequence('clean', ['build-css', 'build-image'], 'useref', 'copy-html');
+    return runSequence('clean', ['build-css', 'build-image'], 'useref', 'copy-html');
 });
