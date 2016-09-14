@@ -1,6 +1,6 @@
 {
   "name": "legs",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "light easy gulp scaffold",
   "main": "gulpfile.js",
   "scripts": {

@@ -90,7 +90,7 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('useref', function () {
-    return gulp.src(PATH.src.html + '/*.html')
+    return gulp.src(PATH.src.html + '/**/*.html')
         .pipe(fileInclude({
             prefix: '@@',
             basepath: PATH.src.html + '/partials',
